@@ -11,6 +11,10 @@ interface DateFormatFunction {
   (date: Date): string;
 }
 
+interface ParseDateFunction {
+  (value: string): Date;
+}
+
 interface ValidationResult {
   [key: string]: boolean;
 }
@@ -215,8 +219,9 @@ interface ValidationResult {
                     'background-color': altInputStyle ? accentColor : colors['white'],
                     'border': altInputStyle ? '' : '1px solid #dadada'}"
         (click)="onInputClick()"
-        [(ngModel)]="inputText"
-        readonly="true"
+        [ngModel]="inputText"
+        (ngModelChange)="onChangeInput($event)"
+        [readonly]="readonly"
       >
       <div
         class="datepicker__calendar"
@@ -326,9 +331,11 @@ export class DatepickerComponent implements OnInit, OnChanges {
   }
   // api bindings
   @Input() disabled: boolean;
+  @Input() readonly: boolean;
   @Input() accentColor: string;
   @Input() altInputStyle: boolean;
   @Input() dateFormat: string | DateFormatFunction;
+  @Input() parseDate: ParseDateFunction;
   @Input() fontFamily: string;
   @Input() rangeStart: Date;
   @Input() rangeEnd: Date;
@@ -372,6 +379,7 @@ export class DatepickerComponent implements OnInit, OnChanges {
       'lightGrey': '#f1f1f1',
       'white': '#ffffff'
     };
+    this.readonly = true;
     this.accentColor = this.colors['blue'];
     this.altInputStyle = false;
     // time
@@ -557,8 +565,9 @@ export class DatepickerComponent implements OnInit, OnChanges {
    * @return true if the date is within the range, false if not.
    */
   isDateValid(date: Date): boolean {
-    return (!this.rangeStart || date.getTime() >= this.rangeStart.getTime()) &&
-           (!this.rangeEnd || date.getTime() <= this.rangeEnd.getTime());
+    return date &&
+      (!this.rangeStart || date.getTime() >= this.rangeStart.getTime()) &&
+      (!this.rangeEnd || date.getTime() <= this.rangeEnd.getTime());
   }
 
   /**
@@ -589,7 +598,32 @@ export class DatepickerComponent implements OnInit, OnChanges {
   * Toggles the calendar when the date input is clicked
   */
   onInputClick(): void {
-    this.showCalendar = !this.showCalendar;
+    if(this.readonly) {
+      this.showCalendar = !this.showCalendar;
+    }
+  }
+
+  onChangeInput(value) {
+    let day: Date;
+    if (typeof this.parseDate === 'function') {
+      day = this.parseDate(value);
+    } else if (this.dateFormat === undefined || this.dateFormat === null) {
+      const momentDay = moment(value, this.DEFAULT_FORMAT, true);
+      if(momentDay.isValid()) {
+        day = momentDay.toDate();
+      }
+    } else if (typeof this.dateFormat === 'string') {
+      const momentDay = moment(value, this.dateFormat, true);
+      if(momentDay.isValid()) {
+        day = momentDay.toDate();
+      }
+    } else {
+      throw Error('Provide parseDate or dateFormat');
+    }
+    if (this.isDateValid(day)) {
+      this.date = day;
+      this.onSelect.emit(day);
+    }
   }
 
   /**
@@ -624,7 +658,7 @@ export class DatepickerComponent implements OnInit, OnChanges {
   */
   handleGlobalClick(event: MouseEvent): void {
     const withinElement = this.elementRef.nativeElement.contains(event.target);
-    if (!this.elementRef.nativeElement.contains(event.target)) {
+    if (!this.elementRef.nativeElement.contains(event.target) && this.readonly) {
       this.closeCalendar();
     }
   }
