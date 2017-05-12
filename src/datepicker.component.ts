@@ -80,10 +80,6 @@ interface ValidationResult {
         color: #b1b1b1;
       }
 
-      .datepicker__calendar__content {
-        margin-top: 0.4em;
-      }
-
       .datepicker__calendar__labels {
         display: -webkit-box;
         display: -ms-flexbox;
@@ -292,10 +288,10 @@ interface ValidationResult {
             <div
               *ngFor="let day of calendarDays"
               class="datepicker__calendar__month__day"
-              [ngStyle]="{'cursor': day == 0 ? 'initial' : 'pointer',
+              [ngStyle]="{'cursor': !isDateValid(day) ? 'initial' : 'pointer',
                           'background-color': getDayBackgroundColor(day),
-                          'color': isHoveredDay(day) ? accentColor : getDayFontColor(day),
-                          'pointer-events': day == 0 ? 'none' : ''
+                          'color': isHoveredDay(day) && isDateValid(day) ? accentColor : getDayFontColor(day),
+                          'pointer-events': !isDateValid(day) ? 'none' : ''
                           }"
               (click)="onSelectDay(day)"
               (mouseenter)="hoveredDay = day"
@@ -374,10 +370,11 @@ export class DatepickerComponent implements OnInit, OnChanges {
     this.showCalendar = false;
     // colors
     this.colors = {
-      'black': '#333333',
+      'black': '#333',
       'blue': '#1285bf',
+      'gray': '#bbb',
+      'white': '#fff',
       'lightGrey': '#f1f1f1',
-      'white': '#ffffff'
     };
     this.readonly = true;
     this.accentColor = this.colors['blue'];
@@ -448,7 +445,6 @@ export class DatepickerComponent implements OnInit, OnChanges {
 
     const calendarArray = this.calendar.monthDays(this.currentYear, this.currentMonthNumber);
     this.calendarDays = [].concat.apply([], calendarArray);
-    this.calendarDays = this.filterInvalidDays(this.calendarDays);
   }
 
   /**
@@ -487,7 +483,6 @@ export class DatepickerComponent implements OnInit, OnChanges {
     this.currentMonth = this.months[monthNumber];
     const calendarArray = this.calendar.monthDays(this.currentYear, this.currentMonthNumber);
     this.calendarDays = [].concat.apply([], calendarArray);
-    this.calendarDays = this.filterInvalidDays(this.calendarDays);
   }
 
   /**
@@ -568,23 +563,6 @@ export class DatepickerComponent implements OnInit, OnChanges {
     return date &&
       (!this.rangeStart || date.getTime() >= this.rangeStart.getTime()) &&
       (!this.rangeEnd || date.getTime() <= this.rangeEnd.getTime());
-  }
-
-  /**
-   * Filter out the days that are not in the date range.
-   * @param calendarDays The calendar days
-   * @return {Array} The input with the invalid days replaced by 0
-   */
-  filterInvalidDays(calendarDays: Array<number>): Array<number> {
-    let newCalendarDays = [];
-    calendarDays.forEach((day: number | Date) => {
-      if (day === 0 || !this.isDateValid(<Date> day)) {
-        newCalendarDays.push(0);
-      } else {
-        newCalendarDays.push(day);
-      }
-    });
-    return newCalendarDays;
   }
 
   /**
@@ -686,6 +664,8 @@ export class DatepickerComponent implements OnInit, OnChanges {
     let color = this.colors['black'];
     if (this.isChosenDay(day)) {
       color = this.colors['white'];
+    } else if (!this.isDateValid(day)) {
+      color = this.colors['gray'];
     }
     return color;
   }
