@@ -135,7 +135,6 @@ interface ValidationResult {
               align-items: center;
         height: 3em;
         background-color: #fff;
-        border-bottom: 1px solid #e8e8e8;
       }
 
       .datepicker__calendar__nav__arrow {
