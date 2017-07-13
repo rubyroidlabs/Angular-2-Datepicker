@@ -1,6 +1,19 @@
 import {
-  animate, Component, ElementRef, EventEmitter, Input, keyframes, OnChanges,
-  OnInit, Output, Renderer, SimpleChange, state, style, transition, trigger
+  animate,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  keyframes,
+  OnChanges,
+  OnInit,
+  Output,
+  Renderer,
+  SimpleChange,
+  state,
+  style,
+  transition,
+  trigger
 } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 
@@ -24,18 +37,24 @@ interface ValidationResult {
   animations: [
     trigger('calendarAnimation', [
       transition('* => left', [
-        animate(180, keyframes([
-          style({ transform: 'translateX(105%)', offset: 0.5 }),
-          style({ transform: 'translateX(-130%)', offset: 0.51 }),
-          style({ transform: 'translateX(0)', offset: 1 })
-        ]))
+        animate(
+          180,
+          keyframes([
+            style({ transform: 'translateX(105%)', offset: 0.5 }),
+            style({ transform: 'translateX(-130%)', offset: 0.51 }),
+            style({ transform: 'translateX(0)', offset: 1 })
+          ])
+        )
       ]),
       transition('* => right', [
-        animate(180, keyframes([
-          style({ transform: 'translateX(-105%)', offset: 0.5 }),
-          style({ transform: 'translateX(130%)', offset: 0.51 }),
-          style({ transform: 'translateX(0)', offset: 1 })
-        ]))
+        animate(
+          180,
+          keyframes([
+            style({ transform: 'translateX(-105%)', offset: 0.5 }),
+            style({ transform: 'translateX(130%)', offset: 0.51 }),
+            style({ transform: 'translateX(0)', offset: 1 })
+          ])
+        )
       ])
     ])
   ],
@@ -204,8 +223,7 @@ interface ValidationResult {
   template: `
     <div
       class="datepicker"
-      [ngStyle]="{'font-family': fontFamily}"
-    >
+      [ngStyle]="{'font-family': fontFamily}" >
       <input
         [disabled]="disabled"
         class="datepicker__input"
@@ -216,17 +234,14 @@ interface ValidationResult {
         (click)="onInputClick()"
         [ngModel]="inputText"
         (ngModelChange)="onChangeInput($event)"
-        [readonly]="readonly"
-      >
+        [readonly]="readonly" >
       <div
         class="datepicker__calendar"
-        *ngIf="showCalendar"
-      >
+        *ngIf="showCalendar" >
         <div class="datepicker__calendar__nav">
           <div
             class="datepicker__calendar__nav__arrow"
-            (click)="onArrowClick('left')"
-          >
+            (click)="onArrowClick('left')" >
           <svg class="datepicker__calendar__nav__chevron" x="0px" y="0px" viewBox="0 0 50 50">
             <g>
               <path d="M39.7,7.1c0.5,0.5,0.5,1.2,0,1.7L29,19.6c-0.5,0.5-1.2,1.2-1.7,1.7L16.5,32.1c-0.5,0.5-1.2,0.5-1.7,0l-2.3-2.3
@@ -253,8 +268,7 @@ interface ValidationResult {
           </div>
           <div
             class="datepicker__calendar__nav__arrow"
-            (click)="onArrowClick('right')"
-          >
+            (click)="onArrowClick('right')" >
             <svg class="datepicker__calendar__nav__chevron" x="0px" y="0px" viewBox="0 0 50 50">
               <g>
                 <path d="M8.4,7.1c-0.5,0.5-0.5,1.2,0,1.7l10.8,10.8c0.5,0.5,1.2,1.2,1.7,1.7l10.8,10.8c0.5,0.5,1.2,0.5,1.7,0l2.3-2.3
@@ -270,20 +284,17 @@ interface ValidationResult {
           </div>
         </div>
         <div
-          class="datepicker__calendar__content"
-        >
+          class="datepicker__calendar__content" >
           <div class="datepicker__calendar__labels">
             <div
               class="datepicker__calendar__label"
-              *ngFor="let day of dayNamesOrdered"
-            >
+              *ngFor="let day of dayNamesOrdered" >
               {{ day }}
             </div>
           </div>
           <div
             [@calendarAnimation]="animate"
-            class="datepicker__calendar__month"
-          >
+            class="datepicker__calendar__month" >
             <div
               *ngFor="let day of calendarDays"
               class="datepicker__calendar__month__day"
@@ -294,8 +305,7 @@ interface ValidationResult {
                           }"
               (click)="onSelectDay(day)"
               (mouseenter)="hoveredDay = day"
-              (mouseleave)="hoveredDay = null"
-            >
+              (mouseleave)="hoveredDay = null" >
               <span *ngIf="day != 0">
                 {{ day.getDate() }}
               </span>
@@ -303,8 +313,7 @@ interface ValidationResult {
           </div>
           <div
             class="datepicker__calendar__cancel"
-            (click)="onCancel()"
-          >
+            (click)="onCancel()" >
             {{cancelText}}
           </div>
         </div>
@@ -319,7 +328,10 @@ export class DatepickerComponent implements OnInit, OnChanges {
   // two way bindings
   @Output() dateChange = new EventEmitter<Date>();
 
-  @Input() get date(): Date { return this.dateVal; }
+  @Input()
+  get date(): Date {
+    return this.dateVal;
+  }
   set date(val: Date) {
     this.dateVal = val;
     this.dateChange.emit(val);
@@ -362,18 +374,17 @@ export class DatepickerComponent implements OnInit, OnChanges {
   // forms
   yearControl: FormControl;
 
-
   constructor(private renderer: Renderer, private elementRef: ElementRef) {
     this.dateFormat = this.DEFAULT_FORMAT;
     // view logic
     this.showCalendar = false;
     // colors
     this.colors = {
-      'black': '#333',
-      'blue': '#1285bf',
-      'gray': '#bbb',
-      'white': '#fff',
-      'lightGrey': '#f1f1f1',
+      black: '#333',
+      blue: '#1285bf',
+      gray: '#bbb',
+      white: '#fff',
+      lightGrey: '#f1f1f1'
     };
     this.readonly = true;
     this.accentColor = this.colors['blue'];
@@ -382,8 +393,18 @@ export class DatepickerComponent implements OnInit, OnChanges {
     this.updateDayNames();
 
     this.months = [
-      'January', 'February', 'March', 'April', 'May', 'June', 'July',
-      'August', 'September', 'October', 'November', ' December'
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December',
     ];
     // listeners
     this.clickListener = renderer.listenGlobal(
@@ -392,12 +413,15 @@ export class DatepickerComponent implements OnInit, OnChanges {
       (event: MouseEvent) => this.handleGlobalClick(event)
     );
     // form controls
-    this.yearControl = new FormControl('', Validators.compose([
-      Validators.required,
-      Validators.maxLength(4),
-      this.yearValidator,
-      this.inRangeValidator.bind(this)
-    ]));
+    this.yearControl = new FormControl(
+      '',
+      Validators.compose([
+        Validators.required,
+        Validators.maxLength(4),
+        this.yearValidator,
+        this.inRangeValidator.bind(this)
+      ])
+    );
   }
 
   ngOnInit() {
@@ -406,7 +430,7 @@ export class DatepickerComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
-    if ((changes['date'] || changes['dateFormat'])) {
+    if (changes['date'] || changes['dateFormat']) {
       this.syncVisualsWithDate();
     }
     if (changes['firstDayOfTheWeek'] || changes['dayNames']) {
@@ -427,7 +451,7 @@ export class DatepickerComponent implements OnInit, OnChanges {
   * closes the calendar, then reopens it, it will open with the current month
   * or month associated with the selected date
   */
-  closeCalendar(): void {
+  closeCalendar() {
     this.showCalendar = false;
     this.syncVisualsWithDate();
   }
@@ -442,7 +466,10 @@ export class DatepickerComponent implements OnInit, OnChanges {
     this.currentYear = date.getFullYear();
     this.yearControl.setValue(this.currentYear);
 
-    const calendarArray = this.calendar.monthDays(this.currentYear, this.currentMonthNumber);
+    const calendarArray = this.calendar.monthDays(
+      this.currentYear,
+      this.currentMonthNumber,
+    );
     this.calendarDays = [].concat.apply([], calendarArray);
   }
 
@@ -454,10 +481,14 @@ export class DatepickerComponent implements OnInit, OnChanges {
     this.dayNamesOrdered = this.dayNames.slice(); // Copy DayNames with default value (weekStart = 0)
     if (this.weekStart < 0 || this.weekStart >= this.dayNamesOrdered.length) {
       // Out of range
-      throw Error(`The weekStart is not in range between ${0} and ${this.dayNamesOrdered.length - 1}`);
+      throw Error(
+        `The weekStart is not in range between ${0} and ${this.dayNamesOrdered
+          .length - 1}`
+      );
     } else {
       this.calendar = new Calendar(this.weekStart);
-      this.dayNamesOrdered = this.dayNamesOrdered.slice(this.weekStart, this.dayNamesOrdered.length)
+      this.dayNamesOrdered = this.dayNamesOrdered
+        .slice(this.weekStart, this.dayNamesOrdered.length)
         .concat(this.dayNamesOrdered.slice(0, this.weekStart)); // Append beginning to end
     }
   }
@@ -465,7 +496,7 @@ export class DatepickerComponent implements OnInit, OnChanges {
   /**
   * Visually syncs calendar and input to selected date or current day
   */
-  syncVisualsWithDate(): void {
+  syncVisualsWithDate() {
     if (this.date) {
       this.setInputText(this.date);
       this.setCurrentValues(this.date);
@@ -478,16 +509,19 @@ export class DatepickerComponent implements OnInit, OnChanges {
   /**
   * Sets the currentMonth and creates new calendar days for the given month
   */
-  setCurrentMonth(monthNumber: number): void {
+  setCurrentMonth(monthNumber: number) {
     this.currentMonth = this.months[monthNumber];
-    const calendarArray = this.calendar.monthDays(this.currentYear, this.currentMonthNumber);
+    const calendarArray = this.calendar.monthDays(
+      this.currentYear,
+      this.currentMonthNumber
+    );
     this.calendarDays = [].concat.apply([], calendarArray);
   }
 
   /**
   * Sets the currentYear and FormControl value associated with the year
   */
-  setCurrentYear(year: number): void {
+  setCurrentYear(year: number) {
     this.currentYear = year;
     this.yearControl.setValue(year);
   }
@@ -495,7 +529,7 @@ export class DatepickerComponent implements OnInit, OnChanges {
   /**
   * Sets the visible input text
   */
-  setInputText(date: Date): void {
+  setInputText(date: Date) {
     let inputText = '';
     const dateFormat: string | DateFormatFunction = this.dateFormat;
     if (dateFormat === undefined || dateFormat === null) {
@@ -515,7 +549,7 @@ export class DatepickerComponent implements OnInit, OnChanges {
   * Sets the date values associated with the calendar.
   * Triggers animation if the month changes
   */
-  onArrowClick(direction: string): void {
+  onArrowClick(direction: string) {
     const currentMonth: number = this.currentMonthNumber;
     let newYear: number = this.currentYear;
     let newMonth: number;
@@ -540,9 +574,11 @@ export class DatepickerComponent implements OnInit, OnChanges {
     let newDate = new Date(newYear, newMonth + 1);
     let newDateValid: boolean;
     if (direction === 'left') {
-      newDateValid = !this.rangeStart || newDate.getTime() >= this.rangeStart.getTime();
+      newDateValid =
+        !this.rangeStart || newDate.getTime() >= this.rangeStart.getTime();
     } else if (direction === 'right') {
-      newDateValid = !this.rangeEnd || newDate.getTime() <= this.rangeEnd.getTime();
+      newDateValid =
+        !this.rangeEnd || newDate.getTime() <= this.rangeEnd.getTime();
     }
 
     if (newDateValid) {
@@ -559,22 +595,24 @@ export class DatepickerComponent implements OnInit, OnChanges {
    * @return true if the date is within the range, false if not.
    */
   isDateValid(date: Date): boolean {
-    return date &&
+    return (
+      date &&
       (!this.rangeStart || date.getTime() >= this.rangeStart.getTime()) &&
-      (!this.rangeEnd || date.getTime() <= this.rangeEnd.getTime());
+      (!this.rangeEnd || date.getTime() <= this.rangeEnd.getTime())
+    );
   }
 
   /**
   * Closes the calendar when the cancel button is clicked
   */
-  onCancel(): void {
+  onCancel() {
     this.closeCalendar();
   }
 
   /**
   * Toggles the calendar when the date input is clicked
   */
-  onInputClick(): void {
+  onInputClick() {
     if (this.readonly) {
       this.showCalendar = !this.showCalendar;
     }
@@ -603,10 +641,7 @@ export class DatepickerComponent implements OnInit, OnChanges {
     }
   }
 
-  /**
-  * Returns the font color for a day
-  */
-  onSelectDay(day: Date): void {
+  onSelectDay(day: Date) {
     if (this.isDateValid(day)) {
       this.date = day;
       this.onSelect.emit(day);
@@ -618,8 +653,10 @@ export class DatepickerComponent implements OnInit, OnChanges {
   * Sets the current year and current month if the year from
   * yearControl is valid
   */
-  onYearSubmit(): void {
-    if (this.yearControl.valid && +this.yearControl.value !== this.currentYear) {
+  onYearSubmit() {
+    if (
+      this.yearControl.valid && +this.yearControl.value !== this.currentYear
+    ) {
       this.setCurrentYear(+this.yearControl.value);
       this.setCurrentMonth(this.currentMonthNumber);
     } else {
@@ -633,9 +670,11 @@ export class DatepickerComponent implements OnInit, OnChanges {
   /**
   * Closes the calendar if a click is not within the datepicker component
   */
-  handleGlobalClick(event: MouseEvent): void {
+  handleGlobalClick(event: MouseEvent) {
     const withinElement = this.elementRef.nativeElement.contains(event.target);
-    if (!this.elementRef.nativeElement.contains(event.target) && this.readonly) {
+    if (
+      !this.elementRef.nativeElement.contains(event.target) && this.readonly
+    ) {
       this.closeCalendar();
     }
   }
@@ -701,9 +740,9 @@ export class DatepickerComponent implements OnInit, OnChanges {
   /**
   * Triggers an animation and resets to initial state after the duration of the animation
   */
-  triggerAnimation(direction: string): void {
+  triggerAnimation(direction: string) {
     this.animate = direction;
-    setTimeout(() => this.animate = 'reset', 185);
+    setTimeout(() => (this.animate = 'reset'), 185);
   }
 
   // -------------------------------------------------------------------------------- //
@@ -717,16 +756,18 @@ export class DatepickerComponent implements OnInit, OnChanges {
 
     if (this.currentMonthNumber) {
       const tentativeDate = new Date(+value, this.currentMonthNumber);
-      if (this.rangeStart && tentativeDate.getTime() < this.rangeStart.getTime()) {
-        return { 'yearBeforeRangeStart': true };
+      if (
+        this.rangeStart && tentativeDate.getTime() < this.rangeStart.getTime()
+      ) {
+        return { yearBeforeRangeStart: true };
       }
       if (this.rangeEnd && tentativeDate.getTime() > this.rangeEnd.getTime()) {
-        return { 'yearAfterRangeEnd': true };
+        return { yearAfterRangeEnd: true };
       }
       return null;
     }
 
-    return { 'currentMonthMissing': true };
+    return { currentMonthMissing: true };
   }
 
   /**
@@ -738,6 +779,6 @@ export class DatepickerComponent implements OnInit, OnChanges {
     if (valid) {
       return null;
     }
-    return { 'invalidYear': true };
+    return { invalidYear: true };
   }
 }
